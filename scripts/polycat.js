@@ -8,6 +8,7 @@ function Polycat () {
   this.target = { x: 0, y: 0 }
   this.focus = { x: 0, y: 0 }
   this.isReady = false
+  this.f = 0
 
   this.install = function (host = document.body) {
     host.appendChild(this.el)
@@ -37,24 +38,24 @@ function Polycat () {
     this.context.clearRect(0, 0, this.el.width, this.el.height)
   }
 
-  this.look = function()
-  {
+  this.look = function () {
     const rate = 5
-    if(Math.abs(polycat.focus.x - polycat.target.x) > 0.0001){
-      polycat.focus.x += polycat.target.x > polycat.focus.x ? (Math.abs(polycat.target.x - polycat.focus.x)/rate) : (Math.abs(polycat.target.x - polycat.focus.x)/rate) * -1
+    if (Math.abs(polycat.focus.x - polycat.target.x) > 0.0001) {
+      polycat.focus.x += polycat.target.x > polycat.focus.x ? (Math.abs(polycat.target.x - polycat.focus.x) / rate) : (Math.abs(polycat.target.x - polycat.focus.x) / rate) * -1
     }
-    if(Math.abs(polycat.focus.y - polycat.target.y) > 0.0001){
-      polycat.focus.y += polycat.target.y > polycat.focus.y ? (Math.abs(polycat.target.y - polycat.focus.y)/rate) : (Math.abs(polycat.target.y - polycat.focus.y)/rate) * -1
+    if (Math.abs(polycat.focus.y - polycat.target.y) > 0.0001) {
+      polycat.focus.y += polycat.target.y > polycat.focus.y ? (Math.abs(polycat.target.y - polycat.focus.y) / rate) : (Math.abs(polycat.target.y - polycat.focus.y) / rate) * -1
     }
     polycat.draw()
-    window.requestAnimationFrame(polycat.look);
+    window.requestAnimationFrame(polycat.look)
   }
 
   this.draw = function () {
     if (!this.isReady) { return }
 
     this.clear()
-  
+
+    const bob = Math.sin(-this.f / 10) * Math.PI / 4
     const range = 100
     const offset = { x: range * this.focus.x * -1, y: range * this.focus.y * -1 }
     // body
@@ -62,11 +63,13 @@ function Polycat () {
     this.context.drawImage(this.assets.get('shadow'), bodyRect.x, bodyRect.y, bodyRect.w, bodyRect.h)
     this.context.drawImage(this.assets.get('body'), bodyRect.x, bodyRect.y, bodyRect.w, bodyRect.h)
     // Head
-    const headRect = { x: offset.x * 0.25, y: offset.y * 0.1, w: 600, h: 600 }
+    const headRect = { x: offset.x * 0.25, y: (offset.y * 0.1) + bob, w: 600, h: 600 }
     this.context.drawImage(this.assets.get('eye'), headRect.x, headRect.y, headRect.w, headRect.h)
-    const pupilRect = { x: offset.x * 0.7, y: offset.y * 0.25, w: 600, h: 600 }
+    const pupilRect = { x: offset.x * 0.7, y: (offset.y * 0.25) + (bob * 0.75), w: 600, h: 600 }
     this.context.drawImage(this.assets.get('pupil'), pupilRect.x, pupilRect.y, pupilRect.w, pupilRect.h)
     this.context.drawImage(this.assets.get('head'), headRect.x, headRect.y, headRect.w, headRect.h)
+
+    this.f += 1
   }
 
   document.addEventListener('mousemove', function (e) { polycat.onMove(e) }, false)
