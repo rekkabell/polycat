@@ -60,7 +60,7 @@ function Polycat () {
     const offset = { x: range * this.focus.x * -1, y: range * this.focus.y * -1 }
     // body
     const bodyRect = { x: 0, y: 0, w: 600, h: 600 }
-    this.context.drawImage(this.assets.get('shadow'), bodyRect.x, bodyRect.y, bodyRect.w, bodyRect.h)
+    this.context.drawImage(this.assets.get('shadow'), offset.x * -0.1, offset.y * -0.05, bodyRect.w, bodyRect.h)
     this.context.drawImage(this.assets.get('body'), bodyRect.x, bodyRect.y, bodyRect.w, bodyRect.h)
     // Head
     const headRect = { x: offset.x * 0.25, y: (offset.y * 0.1) + bob, w: 600, h: 600 }
