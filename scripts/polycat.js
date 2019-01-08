@@ -30,7 +30,7 @@ function Polycat () {
   }
 
   this.onMove = function (e) {
-    polycat.target = { x: -(e.screenX / window.innerWidth) + 0.5, y: -(e.screenY / window.innerHeight) + 0.5 }
+    polycat.target = { x: -(e.clientX / window.innerWidth) + 0.5, y: -(e.clientY / window.innerHeight) + 0.5 }
   }
 
   this.clear = function () {
