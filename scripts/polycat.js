@@ -6,35 +6,30 @@ function Polycat () {
 
   this.assets = new Assets(this)
   this.target = { x: 0, y: 0 }
+  this.focus = { x: 0, y: 0 }
   this.isReady = false
 
   this.install = function (host = document.body) {
-    console.log(this.id, 'Install')
     host.appendChild(this.el)
     this.setup()
   }
 
   this.setup = function () {
-    console.log(this.id, 'Setup')
-
     this.el.width = 600
     this.el.height = 600
     this.el.style.width = '300px'
     this.el.style.height = '300px'
     this.context = this.el.getContext('2d')
-
     this.assets.setup(['body', 'eye', 'head', 'pupil', 'shadow'])
   }
 
   this.start = function () {
     this.isReady = true
-    console.log(this.id, 'Start')
-    this.draw()
+    polycat.look()
   }
 
   this.onMove = function (e) {
     polycat.target = { x: -(e.screenX / window.innerWidth) + 0.5, y: -(e.screenY / window.innerHeight) + 0.5 }
-    polycat.draw()
   }
 
   this.clear = function () {
@@ -42,11 +37,26 @@ function Polycat () {
     this.context.clearRect(0, 0, this.el.width, this.el.height)
   }
 
+  this.look = function()
+  {
+    const rate = 5
+    if(Math.abs(polycat.focus.x - polycat.target.x) > 0.0001){
+      polycat.focus.x += polycat.target.x > polycat.focus.x ? (Math.abs(polycat.target.x - polycat.focus.x)/rate) : (Math.abs(polycat.target.x - polycat.focus.x)/rate) * -1
+    }
+    if(Math.abs(polycat.focus.y - polycat.target.y) > 0.0001){
+      polycat.focus.y += polycat.target.y > polycat.focus.y ? (Math.abs(polycat.target.y - polycat.focus.y)/rate) : (Math.abs(polycat.target.y - polycat.focus.y)/rate) * -1
+    }
+    polycat.draw()
+    window.requestAnimationFrame(polycat.look);
+  }
+
   this.draw = function () {
     if (!this.isReady) { return }
+
     this.clear()
+  
     const range = 100
-    const offset = { x: range * this.target.x * -1, y: range * this.target.y * -1 }
+    const offset = { x: range * this.focus.x * -1, y: range * this.focus.y * -1 }
     // body
     const bodyRect = { x: 0, y: 0, w: 600, h: 600 }
     this.context.drawImage(this.assets.get('shadow'), bodyRect.x, bodyRect.y, bodyRect.w, bodyRect.h)
