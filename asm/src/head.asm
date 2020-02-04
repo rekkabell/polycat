@@ -20,6 +20,10 @@ is_right .dsb 1
 is_down  .dsb 1
 pointerBackgroundLowByte  .dsb 1
 pointerBackgroundHighByte .dsb 1
+timer1 .dsb 1
+timer2 .dsb 1
+timer4 .dsb 1
+timer8 .dsb 1
 
     .ende
 
@@ -45,10 +49,11 @@ PPU_Data        .equ $2007
 
 sprite_y         .equ $0200
 sprite_x         .equ $0203
+sprite_tail      .equ $0219
 
 spriteRAM       .equ $0200
     .org $C000
-    
+  
 ;;;;;;;;;;;;;;;;;
 ;;;   RESET   ;;;
 ;;;;;;;;;;;;;;;;;

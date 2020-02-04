@@ -104,6 +104,8 @@ NMI:
   LDA #$02
   STA $4014       ; set the high byte (02) of the RAM address, start the transfer
 
+  JSR AnimateTimers
+
 LatchController:
   LDA #$01
   STA $4016
@@ -114,32 +116,28 @@ ReadA:
   LDA $4016
   AND #%00000001  ; only look at bit 0
   BEQ ReadADone
-  LDA #$06        ; sprite tile
-  STA $0201
+  JSR ToggleTail
 ReadADone:        ; handling this button is done
   
 ReadB: 
   LDA $4016
   AND #%00000001  ; only look at bit 0
   BEQ ReadBDone
-  LDA #$06        ; sprite tile
-  STA $0201
+  JSR ToggleTail
 ReadBDone:        ; handling this button is done
 
 ReadSel: 
   LDA $4016
   AND #%00000001  ; only look at bit 0
   BEQ ReadSelDone 
-  LDA #$06        ; sprite tile
-  STA $0201
+  NOP
 ReadSelDone:        ; handling this button is done
 
 ReadStart: 
   LDA $4016
   AND #%00000001  ; only look at bit 0
   BEQ ReadStartDone 
-  LDA #$06        ; sprite tile
-  STA $0201
+  NOP
 ReadStartDone:        ; handling this button is done
 
 ReadUp: 
@@ -249,4 +247,28 @@ TestY:
   STA is_down
   RTS
 TestYDone:
+  RTS
+
+ToggleTail:
+  LDA sprite_tail
+  CMP #$0b
+  BEQ ToggleTailB
+ToggleTailA:
+  LDA #$0b
+  STA sprite_tail
+  RTS
+ToggleTailB:
+  LDA #$11
+  STA sprite_tail
+  RTS
+
+AnimateTimers:
+  CLC
+  LDA timer1
+  ADC #$20
+  STA timer1
+  CMP #$00
+  BNE AnimateTimersDone
+  JSR ToggleTail
+AnimateTimersDone:
   RTS
